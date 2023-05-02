@@ -57,4 +57,48 @@ public class ApplicationFormTest {
         String actual = driver.findElement(By.cssSelector("[data-test-id = order-success]")).getText().trim();
         assertEquals(expected, actual);
     }
+
+    @Test
+    void negativeTestWithLatinNameSurname() {
+        driver.findElement(By.cssSelector("[data-test-id = name] input")).sendKeys("Jackson Michael");
+        driver.findElement(By.cssSelector("[data-test-id = phone] input")).sendKeys("+79112235566");
+        driver.findElement(By.cssSelector("[data-test-id = agreement]")).click();
+        driver.findElement(By.className("button")).click();
+        String expected = "Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.";
+        String actual = driver.findElement(By.cssSelector("[data-test-id = name].input_invalid .input__sub")).getText().trim();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void negativeTestWithEmptyNameField() {
+        driver.findElement(By.cssSelector("[data-test-id = name] input")).clear();
+        driver.findElement(By.cssSelector("[data-test-id = phone] input")).sendKeys("+79109105566");
+        driver.findElement(By.cssSelector("[data-test-id = agreement]")).click();
+        driver.findElement(By.className("button")).click();
+        String expected = "Поле обязательно для заполнения";
+        String actual = driver.findElement(By.cssSelector("[data-test-id = name].input_invalid .input__sub")).getText().trim();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void negativeTestWithIncorrectPhoneNumber() {
+        driver.findElement(By.cssSelector("[data-test-id = name] input")).sendKeys("Классный Парень");
+        driver.findElement(By.cssSelector("[data-test-id = phone] input")).sendKeys("+791122355667");
+        driver.findElement(By.cssSelector("[data-test-id = agreement]")).click();
+        driver.findElement(By.className("button")).click();
+        String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
+        String actual = driver.findElement(By.cssSelector("[data-test-id = phone].input_invalid .input__sub")).getText().trim();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void negativeTestWithEmptyPhoneField() {
+        driver.findElement(By.cssSelector("[data-test-id = name] input")).sendKeys("Тим Ирина");
+        driver.findElement(By.cssSelector("[data-test-id = phone] input")).clear();
+        driver.findElement(By.cssSelector("[data-test-id = agreement]")).click();
+        driver.findElement(By.className("button")).click();
+        String expected = "Поле обязательно для заполнения";
+        String actual = driver.findElement(By.cssSelector("[data-test-id = phone].input_invalid .input__sub")).getText().trim();
+        assertEquals(expected, actual);
+    }
 }
